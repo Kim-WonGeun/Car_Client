@@ -4,6 +4,8 @@ import { getCars, deleteCar } from "../api/carapi";
 import { DataGrid } from "@mui/x-data-grid";
 import type { GridColDef , GridCellParams} from "@mui/x-data-grid";
 import Snackbar from "@mui/material/Snackbar";
+import AddCar from './AddCar';
+import EditCar from "./EditCar";
 
 function Carlist() {
     const [open, setOpen] = useState(false);
@@ -23,6 +25,16 @@ function Carlist() {
         {field: 'modelYear', headerName: 'Model Year', width: 150},
         {field: 'price', headerName: 'Price', width: 150},
         {
+            field: 'edit',
+            headerName: '',
+            width: 90,
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            renderCell: (params: GridCellParams) =>
+                <EditCar cardata={params.row} />
+        },
+        {
             field: 'delete',
             headerName: '',
             width: 90,
@@ -30,7 +42,13 @@ function Carlist() {
             filterable: false,
             disableColumnMenu: true,
             renderCell: (params: GridCellParams) => (
-                <button onClick={() => mutate(params.row._links.car.href)}>Delete</button>
+                <button onClick={() => {
+                    if (window.confirm(`Are you sure you want to delete ${params.row.brand} ${params.row.model}?`)) {
+                        mutate(params.row._links.car.href)
+                    }
+                }}>
+                    Delete
+                </button>
             )
         }
     ];
@@ -54,6 +72,7 @@ function Carlist() {
     } else {
         return (
             <>
+                <AddCar />
                 <DataGrid 
                     rows={data}
                     columns={columns}
