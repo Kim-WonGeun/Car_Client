@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Carlist from './Carlist';
+import Snackbar from '@mui/material/Snackbar';
 
 type User = {
     username: string;
@@ -35,8 +36,10 @@ function Login() {
                 setAuth(true);
             }
         })
-        .catch(err => console.log(err));
+        .catch(() => setOpen(true));
     }
+
+    const [open, setOpen] = useState(false);
 
     if (isAuthenticated) {
         return <Carlist />;
@@ -47,6 +50,7 @@ function Login() {
                 <TextField name="username" label="Username" onChange={handleChange} />
                 <TextField type="password" name="password" label="Password" onChange={handleChange} />
                 <Button variant="outlined" color="primary" onClick={handleLogin}>Login</Button>
+                <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)} message="Login failed: Check your username and password" />
             </Stack>
         );
     }
